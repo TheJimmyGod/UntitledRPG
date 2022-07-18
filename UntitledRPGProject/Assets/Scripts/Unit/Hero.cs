@@ -5,9 +5,6 @@ using UnityEngine;
 
 public class Hero : NPC
 {
-    [SerializeField]
-    List<NeedsInfo> m_NeedsList = new List<NeedsInfo>();
-
     protected override void Start()
     {
         base.Start();
@@ -36,6 +33,7 @@ public class Hero : NPC
         mTrigger = null;
         UIManager.Instance.ChangeTwoButtons(UIManager.Instance.mStorage.YesButtonImage,
 UIManager.Instance.mStorage.NoButtonImage);
+        UIManager.Instance.DisplayMoneyBoxInDialogue(true, mProperty.Value);
         UIManager.Instance.AddListenerRightButton(() => {
             foreach (var dialogue in m_DialogueNoCase)
                 m_DialogueQueue.Enqueue(dialogue);
@@ -49,28 +47,13 @@ UIManager.Instance.mStorage.NoButtonImage);
             }
             else
             {
-                foreach (var val in m_NeedsList)
+                if (mProperty.Value <= PlayerController.Instance.mGold)
                 {
-                    switch (val.Name)
-                    {
-                        case "Money":
-                            {
-                                if (val.Value <= PlayerController.Instance.mGold)
-                                {
-                                    PlayerController.Instance.mGold -= val.Value;
-                                    val.onComplete = true;
-                                }
-                            }
-                            break;
-                        case "Item":
-                            //TODO: Item quest
-                            break;
-                        default:
-                            break;
-                    }
+                    PlayerController.Instance.mGold -= mProperty.Value;
+                    isTrading = true;
                 }
-
-                isTrading = m_NeedsList.TrueForAll(t => t.onComplete == true);
+                else
+                    isTrading = false;
 
                 if (isTrading)
                 {
@@ -88,6 +71,7 @@ UIManager.Instance.mStorage.NoButtonImage);
         UIManager.Instance.DisplayEKeyInDialogue(false);
         UIManager.Instance.DisplayButtonsInDialogue(true);
         yield return new WaitUntil(() => mComplete);
+        UIManager.Instance.DisplayMoneyBoxInDialogue(false);
         UIManager.Instance.DisplayButtonsInDialogue(false);
     }
 }

@@ -24,8 +24,7 @@ public class Coin : CollectableObject
         if (other.CompareTag("Player") && !isGained)
         {
             isGained = true;
-            AudioManager.PlaySfx(AudioManager.Instance.mAudioStorage.mItemPurchaseSFX);
-            PlayerController.Instance.mGold += value;
+            PlayerController.Instance.GetGold(value);
             mOwner.mCollectObjects.Remove(gameObject);
             Destroy(gameObject);
         }

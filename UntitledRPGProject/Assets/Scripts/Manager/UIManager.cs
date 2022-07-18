@@ -381,6 +381,29 @@ public class UIManager : MonoBehaviour
         mStorage.mBackButton.gameObject.SetActive(action);
     }
 
+    public void DisplayMoneyBoxInDialogue(bool action, int cost = 0)
+    {
+        StopCoroutine("DisplayMoneyBoxInTime");
+        mStorage.mCurrentMoney.SetActive(action);
+        mStorage.mRequireMoneyBox.SetActive(action);
+        if(action)
+        {
+            mStorage.mRequireMoneyBox.transform.Find("Value").GetComponent<TextMeshProUGUI>().text
+                = cost.ToString();
+            mStorage.mCurrentMoney.GetComponent<Animator>().Play("Idle");
+        }
+    }
+
+    public IEnumerator DisplayMoneyBoxInTime(float t)
+    {
+        mStorage.mCurrentMoney.SetActive(true);
+        mStorage.mCurrentMoney.GetComponent<Animator>().SetTrigger("FadeIn");
+        yield return new WaitForSeconds(t);
+        mStorage.mCurrentMoney.GetComponent<Animator>().SetTrigger("FadeOut");
+        yield return new WaitForSeconds(0.5f);
+        mStorage.mCurrentMoney.SetActive(false);
+    }
+
     public void DisplayTutorialIcon(string icon, bool here = false)
     {
         switch(icon)

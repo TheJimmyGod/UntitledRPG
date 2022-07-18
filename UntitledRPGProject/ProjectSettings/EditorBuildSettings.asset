@@ -20,7 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Tutorial.unity
     guid: 0c6530115d2003341b4cbf2a92567a62
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Level_1.unity
     guid: a1c6003e9f5711641ad8abe28a077491
   - enabled: 0
@@ -35,7 +35,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Sandbox.unity
     guid: 280dffa5be8a05441bade0c240a5bfbf
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/JimmyTest.unity
     guid: 4e6f8f58f8892d744b2be1b9ed55fd7b
   - enabled: 0

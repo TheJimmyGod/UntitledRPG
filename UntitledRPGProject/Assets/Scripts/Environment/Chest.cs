@@ -76,7 +76,7 @@ public class Chest : InteractableEnvironment, ILockable
                     {
                         EnableIcon();
                         if(mItems == null)
-                            PlayerController.Instance.mGold += mMoney;
+                            PlayerController.Instance.GetGold(mMoney);
                         else
                         {
                             for (int i = 0; i < mItems.Count; ++i)

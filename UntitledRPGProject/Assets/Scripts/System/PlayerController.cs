@@ -259,6 +259,18 @@ public class PlayerController : MonoBehaviour
         mAnimator?.SetBool("Death", false);
     }
 
+    public void GetGold(int money)
+    {
+        UIManager.Instance.StartCoroutine(UIManager.Instance.DisplayMoneyBoxInTime(2.0f));
+        mGold += money;
+        AudioManager.PlaySfx(AudioManager.Instance.mAudioStorage.mItemPurchaseSFX);
+        GameObject prefab = mCanvas.transform.Find("Boarder").Find("GoldGet").gameObject;
+        GameObject particle = Instantiate(prefab, PlayerController.Instance.transform.position
+            + new Vector3(0, 2, 0), Quaternion.Euler(prefab.transform.eulerAngles));
+        particle.SetActive(true);
+        Destroy(particle, 1.5f);
+    }
+
     public void OnBattleStart()
     {
         mState = new BattleState();

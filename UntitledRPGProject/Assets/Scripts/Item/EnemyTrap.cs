@@ -56,7 +56,6 @@ public class EnemyTrap : Item
 
         newEnemyProwler.GetComponent<EnemyProwler>().Initialize(place.GetComponent<EnemySpawner>());
         isSuccess = true;
-        Debug.Log("Hi");
     }
 
     public override void End()

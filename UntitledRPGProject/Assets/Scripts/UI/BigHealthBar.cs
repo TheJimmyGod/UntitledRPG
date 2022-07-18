@@ -105,8 +105,11 @@ public class BigHealthBar : HealthBar, IPointerEnterHandler, IPointerExitHandler
         if (isInitialized)
         {
             isTargetted = false;
-            Player unit = (Player)BattleManager.Instance.mCurrentUnit;
-            unit.mTarget = null;
+            if(BattleManager.Instance.mCurrentUnit)
+            {
+                Player unit = (Player)BattleManager.Instance.mCurrentUnit;
+                unit.mTarget = null;
+            }
         }
     }
 }

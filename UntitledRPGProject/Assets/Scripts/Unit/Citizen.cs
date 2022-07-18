@@ -10,6 +10,10 @@ public class Citizen : NPC
 
     private int mMoney = 0;
     private bool isEvent = false;
+
+    [SerializeField]
+    private float mRateToTurnEnemy = 30.0f;
+
     [SerializeField]
     private string[] names = new string[50]
     {
@@ -83,13 +87,10 @@ public class Citizen : NPC
                 "This is the end of the world"
         };
 
-
-    // Quest
-
     protected override void Start()
     {
         base.Start();
-        isEvent = UnityEngine.Random.Range(0, 100) <= 30 ? true : false;
+        isEvent = UnityEngine.Random.Range(0, 100) <= 30.0f ? true : false;
 
         mName = names[UnityEngine.Random.Range(0, names.Length)];
         mMoney = UnityEngine.Random.Range(5, 100);
@@ -97,7 +98,7 @@ public class Citizen : NPC
         {
             m_DialogueList.Clear();
             m_DialogueList.Add(new Dialogue($"{eventContexts[UnityEngine.Random.Range(0, eventContexts.Length)]} \n (Do you want to help them?)", Dialogue.TriggerType.Event));
-            if (UnityEngine.Random.Range(0, 100) <= 50)
+            if (UnityEngine.Random.Range(0, 100) <= mRateToTurnEnemy)
             {
                 mProperty = Resources.Load<EnemyTrap>("Prefabs/Items/EnemyTrap");
 
@@ -175,11 +176,7 @@ public class Citizen : NPC
                             Callback += () => { Destroy(gameObject,2.0f); };
                         }
                         else
-                        {
-                            m_DialogueList.Clear();
-                            m_DialogueResultCase = new Dialogue("...", Dialogue.TriggerType.None);
-                            m_DialogueList.Add(m_DialogueResultCase);
-                        }
+                            ResultDialogue(". . .");
                     }
                     break;
                 case Dialogue.TriggerType.Success:
@@ -190,11 +187,8 @@ public class Citizen : NPC
                         {
                             if (mProperty.GetType().IsAssignableFrom(typeof(EnemyTrap)))
                             {
-                                PlayerController.Instance.mGold += mProperty.Value;
-                                AudioManager.PlaySfx(AudioManager.Instance.mAudioStorage.mItemPurchaseSFX);
-                                m_DialogueList.Clear();
-                                m_DialogueResultCase = new Dialogue("Where is my money??", Dialogue.TriggerType.None);
-                                m_DialogueList.Add(m_DialogueResultCase);
+                                PlayerController.Instance.GetGold(mProperty.Value);
+                                ResultDialogue("??? Where is my money??");
                             }
                             else
                             {
@@ -204,19 +198,13 @@ public class Citizen : NPC
                                 newItem.GetComponent<EquipmentItem>().Initialize(mProperty.ID);
                                 PlayerController.Instance.mInventory.Add(newItem.GetComponent<Item>());
                                 newItem.transform.SetParent(PlayerController.Instance.mBag.transform);
-
-                                m_DialogueList.Clear();
-                                m_DialogueResultCase = new Dialogue("Thank you, hero!", Dialogue.TriggerType.None);
-                                m_DialogueList.Add(m_DialogueResultCase);
+                                ResultDialogue("Greetings, hero!");
                             }
                         }
                         else
                         {
-                            PlayerController.Instance.mGold += mMoney;
-                            AudioManager.PlaySfx(AudioManager.Instance.mAudioStorage.mItemPurchaseSFX);
-                            m_DialogueList.Clear();
-                            m_DialogueResultCase = new Dialogue("Thank you, hero!", Dialogue.TriggerType.None);
-                            m_DialogueList.Add(m_DialogueResultCase);
+                            PlayerController.Instance.GetGold(mMoney);
+                            ResultDialogue("Greetings, my hero!");
                         }
                         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
                     }
@@ -234,6 +222,13 @@ public class Citizen : NPC
         Callback?.Invoke();
         mComplete = false;
         mTrigger = null;
+    }
+
+    private void ResultDialogue(string text)
+    {
+        m_DialogueList.Clear();
+        m_DialogueResultCase = new Dialogue(text, Dialogue.TriggerType.None);
+        m_DialogueList.Add(m_DialogueResultCase);
     }
 
     private void IconEnable()
